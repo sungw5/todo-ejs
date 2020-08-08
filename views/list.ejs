@@ -4,8 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>To Do List</title>
+    <link rel="stylesheet" href="css/default.css">
+    <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
-    <h1>It's <%= kindOfDay %></h1>
+
+    <div class="box" id="heading">
+        <h1 class="date"><%= kindOfDay %></h1>
+    </div>
+    
+    <div class="box">
+        <% for(let i=0; i<newListItems.length; i++){ %>
+        <div class="items">
+            <input type="checkbox">
+            <!-- Add new li as values gets pushed into the array -->
+            <p> <%= newListItems[i] %> </p>
+        </div>
+        <% } %>
+
+
+            <form action="/" method="POST">
+              <input type="text" name="newItem" placeholder="New Item" autocomplete="off"/>
+              <button type="submit" name="button">+</button>
+            </form>
+
+        
+    </div>
+
+    
+
+    
   </body>
 </html>
