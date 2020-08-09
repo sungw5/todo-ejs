@@ -4,8 +4,8 @@ const date = require(__dirname + "/date.js");
 
 const app = express();
 
-let items = ["Coding", "Read Bible", "work out"];
-let workItems = [];
+const items = ["Coding", "Read Bible", "work out"];
+const workItems = [];
 
 // specify static folder where css,img files are
 app.use(express.static("public"));

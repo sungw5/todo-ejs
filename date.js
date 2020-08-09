@@ -1,10 +1,10 @@
 //jshint esversion:6
 
 exports.getDate = () => {
-  let today = new Date();
+  const today = new Date();
   //   let currentDay = today.getDay();
 
-  let options = {
+  const options = {
     weekday: "long",
     day: "numeric",
     month: "long",
