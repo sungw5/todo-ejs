@@ -1,9 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const date = require(__dirname + "/date.js");
 
 const app = express();
 
-let items = [];
+let items = ["Coding", "Read Bible", "work out"];
+let workItems = [];
 
 // specify static folder where css,img files are
 app.use(express.static("public"));
@@ -13,19 +15,11 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  let today = new Date();
-  //   let currentDay = today.getDay();
-
-  let options = {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  };
-
-  let day = today.toLocaleDateString("en-US", options);
-
   //   pass the variable  day
-  res.render("list", { kindOfDay: day, newListItems: items });
+
+  // function from date.js
+  let day = date.getDate();
+  res.render("list", { listTitle: day, newListItems: items });
 });
 
 /////////////////////////////////////////////////////////////////
@@ -34,9 +28,21 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res) => {
   let item = req.body.newItem;
-  items.push(item);
-  //  go back to home page
-  res.redirect("/");
+
+  // push into work array
+  if (req.body.list === "Work") {
+    workItems.push(item);
+    res.redirect("/work");
+  }
+  // push into home array
+  else {
+    items.push(item);
+    res.redirect("/");
+  }
+});
+
+app.get("/work", (req, res) => {
+  res.render("list", { listTitle: "Work List", newListItems: workItems });
 });
 
 app.listen(3000, () => {
