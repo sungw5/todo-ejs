@@ -1,11 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const date = require(__dirname + "/date.js");
+
+const mongoose = require("mongoose");
 
 const app = express();
-
-const items = ["Coding", "Read Bible", "work out"];
-const workItems = [];
 
 // specify static folder where css,img files are
 app.use(express.static("public"));
@@ -14,12 +12,41 @@ app.set("view engine", "ejs");
 // setting up the body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  //   pass the variable  day
+/////////////////////////////////////////////////////////////////
+////////////////////////// DataBase /////////////////////////////
+/////////////////////////////////////////////////////////////////
 
-  // function from date.js
-  let day = date.getDate();
-  res.render("list", { listTitle: day, newListItems: items });
+// Connect to DB
+mongoose.connect("mongodb://localhost:27017/todolistDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Create schema
+const itemSchema = {
+  name: String,
+};
+
+const Item = mongoose.model("Item", itemSchema);
+
+const item1 = new Item({
+  name: "Welcome to your todolist!",
+});
+const item2 = new Item({
+  name: "Hit the + button to add a new item.",
+});
+const item3 = new Item({
+  name: "<-- Hit this to delete an item.",
+});
+
+const defaultItems = [item1, item2, item3];
+Item.insertMany(defaultItems, (err) => {
+  if (err) console.log(err);
+  else console.log("Successfully inserted default items to database.");
+});
+
+app.get("/", (req, res) => {
+  res.render("list", { listTitle: "Today", newListItems: items });
 });
 
 /////////////////////////////////////////////////////////////////
