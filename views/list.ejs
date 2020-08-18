@@ -20,6 +20,8 @@
                     <!-- Add new li as values gets pushed into the array -->
                     <p> <%= newListItems[i].name %> </p>
                 </div>
+
+                <input type="hidden" name="listName" value="<%= listTitle %>" />
             </form>
         <% } %>
 

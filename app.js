@@ -50,20 +50,6 @@ const listSchema = {
 
 const List = mongoose.model("List", listSchema);
 
-// Item.deleteMany((err) => {
-//   if (err) console.log(err);
-//   else console.log("Successfully deleted");
-// });
-
-// Item.find((err, items) => {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     mongoose.connection.close();
-//     console.log(items);
-//   }
-// });
-
 app.get("/", (req, res) => {
   Item.find({}, (err, foundItems) => {
     // if there's no item, insert default items
@@ -87,28 +73,51 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res) => {
   const itemName = req.body.newItem;
+  const listName = req.body.list; // button's name
+
   const item = new Item({
     name: itemName,
   });
 
-  item.save();
-  res.redirect("/");
+  if (listName === "Today") {
+    item.save();
+    res.redirect("/");
+  } else {
+    List.findOne({ name: listName }, (err, foundList) => {
+      foundList.items.push(item);
+      foundList.save();
+      res.redirect("/" + listName);
+    });
+  }
 });
 
 // Delete items via checkbox
 app.post("/delete", (req, res) => {
   const checkedItemId = req.body.checkbox;
+  const listName = req.body.listName;
 
-  Item.findByIdAndRemove(checkedItemId, (err) => {
-    if (!err) {
-      console.log("Successfully deleted checked item.");
-      res.redirect("/");
-    }
-  });
+  if (listName === "Today") {
+    Item.findByIdAndRemove(checkedItemId, (err) => {
+      if (!err) {
+        console.log("Successfully deleted checked item.");
+        res.redirect("/");
+      }
+    });
+  } else {
+    List.findOneAndUpdate(
+      { name: listName },
+      { $pull: { items: { _id: checkedItemId } } },
+      (err, foundList) => {
+        if (!err) {
+          res.redirect("/" + listName);
+        }
+      }
+    );
+  }
 });
 
 app.get("/:customPage", (req, res) => {
-  const customPage = _.lowerCase(req.params.customPage);
+  const customPage = _.capitalize(req.params.customPage);
 
   List.findOne({ name: customPage }, (err, foundList) => {
     if (!err) {
