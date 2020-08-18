@@ -8,16 +8,23 @@
     </div>
     
     <div class="box">
+
+
+
+
+
         <% for(let i=0; i<newListItems.length; i++){ %>
-        <div class="items">
-            <input type="checkbox">
-            <!-- Add new li as values gets pushed into the array -->
-            <p> <%= newListItems[i] %> </p>
-        </div>
+            <form action="/delete" method="POST">
+                <div class="items">
+                    <input type="checkbox" name="checkbox" value="<%= newListItems[i]._id %>" onchange="this.form.submit()">
+                    <!-- Add new li as values gets pushed into the array -->
+                    <p> <%= newListItems[i].name %> </p>
+                </div>
+            </form>
         <% } %>
 
 
-            <form action="/" method="POST">
+            <form class="item" action="/" method="POST">
               <input type="text" name="newItem" placeholder="New Item" autocomplete="off"/>
               <button type="submit" name="list" value=<%= listTitle %> >+</button>
             </form>
